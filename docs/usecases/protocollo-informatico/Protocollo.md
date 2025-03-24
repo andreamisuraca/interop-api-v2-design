@@ -2,7 +2,7 @@
 ## For Protocollo Informatico
 
 Version 0.1  
-Prepared by [@andreamisuraca](https://www.github.com/andreamisuraca), [@iamsimone](https://www.github.com/iamsimone)  
+Prepared by [@andreamisuraca](https://www.github.com/andreamisuraca), [@imsimone](https://www.github.com/iamsimone)  
 Dipartimento per la trasformazione digitale / AGID  
 Created 2025-03-17  
 
@@ -138,7 +138,7 @@ Il template per il servizio descritto prevede l'accettazione automatica delle ri
 Il template inoltre deve essere creato in modo da rendere disponibile la delega riferita al relativo e-service. Ciò significa che ogni AOO autorizza i fruitori a delegare altri enti (AgID) ad iscriversi per conto dell'ente stesso.
 
 #### 3.2.3 Delega fruizione
-Al fine di garantire che ogni AOO fruisca di tutti gli e-service di protocollo informatico erogati, AgID si fa carico, in qualità di delegato, di inviare le richieste di fruizioni, e creare le rispettive finalità. Per delegare AgID alla gestione delle richieste di fruizione, gli aderenti devono concedere la delega per ogni e-service di protocollo informatico. La delega permette ad AgID di eseguire, per conto di un altro ente, le seguenti operazioni: 
+Al fine di garantire che ogni AOO fruisca di tutti gli e-service di protocollo informatico erogati, AgID si fa carico, in qualità di delegato, di inviare le richieste di fruizione, e creare le rispettive finalità. Per delegare AgID alla gestione delle richieste di fruizione, gli aderenti devono concedere la delega per ogni e-service di protocollo informatico. La delega permette ad AgID di eseguire, per conto di un delegante, le seguenti operazioni: 
 * Inviare una richiesta di fruizione per ogni e-service di protocollo informatico
 * Creare e inviare una finalità per ogni e-service di protocollo informatico
 
@@ -149,11 +149,14 @@ sequenceDiagram
   participant AOO as AOO/PA
   participant PDND
 
+  note over IPA, PDND: Non ha senso ipotizzare di utilizzare la UI, visto che ci sono circa 38k e-service per cui creare una delega
   AOO->>IPA: GET /eservices/
-  IPA-->>AOO: 200 OK {"eservices": ["eservice1", "eservice2", ...]}
-  note over AOO, PDND: Non ha senso la delega via UI, visto che ci sono circa 38k e-service da delegare
-  loop for each e-service 'Protocollo Informatico'
-    AOO->>PDND: POST /consumerDelegation/ {"eserviceId": "xyz", "tenantId": "AGID", "type": "minimal"}
+  IPA-->>AOO: 200 OK {"eservices": [{"eserviceId": "eservice1", "producerId": "aooId", ...}, ...]}
+  note over AOO, PDND: Recupero le deleghe in essere per capire quelle ancora da creare
+  AOO->>PDND: GET /consumerDelegations/
+  PDND-->>AOO: 200 OK {"delegations": [{"eserviceId": "xyz", "tenantId": "AGID", "type": "minimal"}, ...]}
+  loop for each e-service 'Protocollo Informatico' not delegated
+    AOO->>PDND: POST /consumerDelegations/ {"eserviceId": "xyz", "tenantId": "AGID", "type": "minimal"}
     PDND-->>AOO: ACK Delegation created
   end
 ```
