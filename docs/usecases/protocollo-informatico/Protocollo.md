@@ -37,6 +37,7 @@ Table of Contents
 | Nome | Data    | Motivo dei cambiamenti  | Versione   |
 | ---- | ------- | ------------------- | --------- |
 | Andrea Misuraca | 2025-03-17 | Stestura iniziale | 0.1 |
+| Andrea Misuraca | 2025-03-25 | Aggiornato diagramma IPA | 0.2 |
 |      |         |                     |           |
 |      |         |                     |           |
 
@@ -201,22 +202,31 @@ Prima di procedere con l'invio delle richieste di fruizione, AGID deve controlla
 * l'aderente ha associato l'attributo certificato `AOO`;
 * hanno delegato AGID per inviare le richieste di fruizione a tutti gli e-service delle altre AOO (opzionale).
 
-@todo:{AnMi: Invertire gli stati, così che l'e-service viene registrato solo se ha passato tutti gli altri controlli.}
-
 ```mermaid
 stateDiagram-v2
-  state if_state <<choice>>
   state AGID {
-    [*] --> hasEserviceProtocollo : for each AOO in IPA
-    hasEserviceProtocollo --> IsTemplateProtocollo : if true
-    hasEserviceProtocollo --> [*] : if false
-    IsTemplateProtocollo --> hasAttributeAOO: if true
-    IsTemplateProtocollo --> [*]: if false
-    hasAttributeAOO --> hasPendingDelegationRequest : if true
-    hasAttributeAOO --> [*] : if false
-    hasPendingDelegationRequest --> acceptDelegation : if true
-    hasPendingDelegationRequest --> [*] : if false
-    acceptDelegation --> [*]
+    state if0 <<choice>>
+    state if1 <<choice>>
+    state if2 <<choice>>
+    state if3 <<choice>>
+  
+    [*] --> isTemplateProtocollo : for each AOO in IPA
+    isTemplateProtocollo --> if0
+    if0 --> tenantHasAttributeAOO : true
+    if0 --> triggerError : false
+    tenantHasAttributeAOO --> if1
+    if1 --> isDelegated : true
+    if1 --> triggerError : false
+    isDelegated --> if2
+    if2 --> triggerSuccess : true
+    if2 --> hasPendingDelegationRequest : false
+    hasPendingDelegationRequest --> if3
+    if3 --> acceptDelegation : true
+    if3 --> triggerWarning : false
+    acceptDelegation --> triggerSuccess
+    triggerError --> [*]
+    triggerWarning --> [*]
+    triggerSuccess --> [*]
   }
 ```
 Il job descritto deve essere un batch ricorrente, poichè i controlli effettuati nei vari stati dipendono dalle azioni che ogni AOO compie in maniera totalmente indipendente. Poichè ci possono essere variazioni è opportuno che venga eseguito periodicamente per tutti gli e-service, visto che le AOO potrebbero variare su IPA, e di conseguenza in PDND, e ci sarebbe sempre bisogno di nuove deleghe.
