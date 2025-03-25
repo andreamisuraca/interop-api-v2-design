@@ -31,6 +31,7 @@ Table of Contents
     * 3.2.6 [Verifiche AgID](#326-verifiche-agid)
     * 3.2.7 [Invio richieste di fruizione](#327-invio-richieste-di-fruizione)
     * 3.2.8 [Gestione delle finalità](#328-gestione-delle-finalità)
+    * 3.2.9 [Associazione delle finalità al client](#329-associazione-delle-finalità-al-client)
 * 4 [Appendici](#4-appendici)
 
 ## Storia Revisione
@@ -54,7 +55,7 @@ Con “Protocollo Informatico” si indica la componente software del sistema di
 In particolare si vuole normale la trasmissione e la ricezione dei documenti informatici, mediante standard web sicuri ed affidabili, nel rispetto delle Linee Guida AgID per l'interoperabilità (ModI) e per la Piattaforma Digitale Nazionale Dati.
 
 ### 1.3 Definizioni, Acronimi e Abbreviazioni
-@todo:{AnMi: TBD}
+@todo{AnMi: TBD}
 
 ### 1.4 Riferimenti
 * Linee Guida AgID per l'interoperabilità (ModI)
@@ -168,7 +169,8 @@ Il job descritto deve essere un batch ricorrente, poichè gli e-service del prot
 Una volta che gli e-service sono stati creati e pubblicati nell'ambiente `Produzione` di PDND è necessario associarli alle AOO. Ogni AOO presente su IPA deve avere il proprio e-service 'Protocollo informatico'. IPA dovrà consentire ad ogni AOO di effettuare l'associazione, che verrà effettuata compilando un  campo aggiuntivo (`eserviceId`) su IPA. l'`eserviceId` identifica ogni e-service pubblicato, ma non la specifica versione.
 
 #### 3.2.5 Assegnazione attributo AOO
-@todo{AnMi: Verificare se è ancora attendibile questa procedura.}
+@todo{AnMi: Verificare se è ancora attendibile questa procedura.}  
+
 Come già accennato, il sistema di protocollazione permette la comunicazione tra AOO (e non tra PA). Ogni PA ha almeno una AOO, non ci possono essere quindi PA senza AOO. PDND mette a disposizione l'attributo `Pubbliche Amministrazioni` per limitare la fruizione di un e-service alle sole PA. In generale potrebbe essere sufficiente per il protocollo informatico, tuttavia potrebbe verificarsi il caso limite in cui tutte le AOO di un'amministrazione hanno aderito autonomamente a PDND, e anche l'amministrazione in qualità di PA ha effettuato l'onboarding.  
 A titolo di esempio, si assume l'amministrazione Ministero dell'Economia e delle Finanze (MEF) e per semplicità si suppone che abbia solo tre AOO:
 * Ragioneria Generale dello Stato (RGS)
@@ -267,6 +269,52 @@ sequenceDiagram
   end
 ```
 
+#### 3.2.9 Associazione delle finalità al client
+AgID si preclude la possibilità di vedere i client delle AOO deleganti. Gli aderenti sono tenuti quindi a creare in autonomia i propri client, e associare il materiale crittografico e le finalità.  
+Una AOO può creare un client attraverso l'interfaccia grafica di PDND e può procedere all'associazione degli utenti e delle chiavi pubbliche sempre tramite UI. Per tutte le finalità associate ad un e-service di protocollo informatico, circa 38k, l'AOO può procedere con l'associazione tramite API:
+
+```mermaid
+sequenceDiagram
+
+  participant AOO as AOO/PA
+  participant PDND
+
+  note over AOO, PDND: Non ha senso ipotizzare di utilizzare la UI, visto che ci sono circa 38k finalità da associare
+  AOO->>PDND: GET /purposes/{templateId}
+  PDND-->>AOO: 200 OK {"purposes": [{"purposeId": "purpose1", ...}, ...]}
+
+  loop for each purpose associated to e-services from template 'Protocollo Informatico'
+    AOO->>PDND: POST /associatePurpose/ {"clientId": "client1", "purposeId": "purpose1"}
+    PDND-->>AOO: ACK Purpose associated
+  end
+```
+
+#### 3.2.10 Aggiornamento del template "Protocollo informatico"
+@todo{AnMi: TBD}
+
+### 3.3 FAQ
+> La sezione contiene una lista di domande frequenti che possono interessare le AOO.  
+
+<details>
+  <summary>Cosa succede se revoco una delega ad AgID?</summary>
+  <p>TBD</p>
+</details>
+<details>
+  <summary>Cosa succede se sospendo l'e-service "Protocollo informatico"?</summary>
+  <p>TBD</p>
+</details>
+<details>
+  <summary>Cosa succede se sospendo una richiesta di fruizione o una finalità?</summary>
+  <p>TBD</p>
+</details>
+<details>
+  <summary>Cosa succede se non aggiorno il mio e-service all'ultima versione del template?</summary>
+  <p>TBD</p>
+</details>
+<details>
+  <summary>Posso modificare l'e-service id inserito su IPA?</summary>
+  <p>TBD</p>
+</details>
 
 <!--
 ### 3.3 Quality of Service
