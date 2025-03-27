@@ -32,7 +32,8 @@ Table of Contents
     * 3.2.7 [Invio richieste di fruizione](#327-invio-richieste-di-fruizione)
     * 3.2.8 [Gestione delle finalità](#328-gestione-delle-finalità)
     * 3.2.9 [Associazione delle finalità al client](#329-associazione-delle-finalità-al-client)
-* 4 [Appendici](#4-appendici)
+* 4 [Considerazioni](#4-considerazioni)
+  * 4.1 [Analisi Quantitativa e Impatti Scalari](#41-analisi-quantitativa-e-impatti-scalari)
 
 ## Storia Revisione
 | Nome | Data    | Motivo dei cambiamenti  | Versione   |
@@ -342,4 +343,38 @@ Specify the requirements derived from existing standards or regulations, includi
 For example, this could specify the requirement for software to trace processing activity. Such traces are needed for some applications to meet minimum regulatory or financial standards. An audit trace requirement may, for example, state that all changes to a payroll database shall be recorded in a trace file with before and after values.
 -->
 
-## 4. Appendici
+## 4. Considerazioni
+
+### 4.1 Analisi Quantitativa e Impatti Scalari
+L’adozione sistemica del protocollo informatico attraverso la Piattaforma Digitale Nazionale Dati (PDND) implica un salto di scala tecnologico e organizzativo senza precedenti. Nell’ipotesi in cui tutte le Aree Organizzative Omogenee (AOO) aderiscano alla piattaforma, si prevede una configurazione a regime composta da circa **38.000 AOO** e altrettanti **e-service di protocollo** pubblicati.
+
+Questa configurazione genera uno scenario computazionale e gestionale estremamente rilevante:
+
+- **38.000 e-service attesi**, uno per ciascuna AOO;
+- **~1,44 miliardi di richieste di fruizione** (pari al prodotto cartesiano delle AOO: 38.000 × 38.000);
+- **~1,44 miliardi di finalità** necessarie per l’interoperabilità bidirezionale tra tutti gli enti coinvolti.
+
+Questi volumi delineano un’infrastruttura che, in termini di carico potenziale, è **due ordini di grandezza superiore** rispetto all’attuale utilizzo della PDND. A titolo comparativo, allo stato attuale (marzo 2025), la PDND interconnette:
+
+- **7.900 enti**;
+- **11.000 e-service** attivi;
+- **15.000 richieste di fruizione** attualmente in essere.
+
+Inoltre, nel solo anno 2024, sono stati emessi **320 milioni di voucher**, un dato che testimonia una crescita progressiva della piattaforma, ma che resta comunque **sostanzialmente inferiore** rispetto alle proiezioni richieste dal sistema “Protocollo Informatico”.
+
+È evidente che l’adozione capillare del protocollo su PDND implicherebbe un’espansione drastica dell’infrastruttura, non solo in termini di volumi gestiti ma anche in termini di:
+
+- **Gestione delle deleghe e delle finalità** su larga scala;
+- **Performance e disponibilità dei servizi**;
+- **Monitoraggio e auditing** distribuito;
+- **Mantenimento della coerenza tra IPA, PDND e i registry locali di ogni AOO.**
+
+Va inoltre evidenziata una lacuna significativa: **non esiste ad oggi una stima affidabile del volume quotidiano di documenti protocollati** tra AOO. Questo dato è imprescindibile per valutare se l’infrastruttura prevista sia proporzionata alla domanda reale e per calibrare adeguatamente le soglie di servizio (SLA), i requisiti di affidabilità e le politiche di scaling automatico.
+
+**Raccomandazione:** è urgente attivare un’indagine quantitativa, coordinata da AgID, in collaborazione con un campione rappresentativo di enti pubblici centrali e locali, per:
+
+- Rilevare il volume giornaliero e mensile di documenti protocollati;
+- Stimare i picchi e le oscillazioni stagionali;
+- Validare le previsioni di traffico e le ipotesi progettuali.
+
+**In sintesi**, l’ambizione di rendere interoperabili tutte le AOO italiane tramite la PDND per lo scambio documentale è tecnicamente realizzabile, ma richiede **una pianificazione straordinaria**. Il sistema “Protocollo Informatico” non è un’evoluzione lineare dell’esistente: è un cambio di paradigma che impone **una revisione strutturale della piattaforma, dei processi di governance e delle capacità di orchestrazione a livello nazionale**.
